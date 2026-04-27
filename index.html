@@ -1,0 +1,102 @@
+<!-- ===================== index.html ===================== -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Luxury Diet Planner</title>
+
+<style>
+:root{
+  --bg1:#f8f5f0;
+  --bg2:#efe6d8;
+  --gold:#d4af37;
+  --soft:#ffffffcc;
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  font-family:'Segoe UI',sans-serif;
+  background:linear-gradient(135deg,var(--bg1),var(--bg2));
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+.card{
+  backdrop-filter:blur(25px);
+  background:var(--soft);
+  padding:40px;
+  border-radius:24px;
+  width:320px;
+  box-shadow:0 10px 40px rgba(0,0,0,0.08);
+  animation:fadeUp .8s ease;
+}
+
+h1{
+  text-align:center;
+  color:var(--gold);
+  margin-bottom:20px;
+}
+
+input{
+  width:100%;
+  padding:12px;
+  margin:10px 0;
+  border:none;
+  border-radius:12px;
+  background:#fff;
+}
+
+button{
+  width:100%;
+  padding:12px;
+  border:none;
+  border-radius:12px;
+  background:var(--gold);
+  color:white;
+  cursor:pointer;
+  transition:.3s;
+}
+
+button:hover{
+  transform:translateY(-2px);
+  box-shadow:0 5px 15px rgba(212,175,55,0.4);
+}
+
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(20px)}
+  to{opacity:1;transform:translateY(0)}
+}
+</style>
+</head>
+
+<body>
+<div class="card">
+  <h1>Diet Planner</h1>
+  <input type="number" id="weight" placeholder="Weight (kg)">
+  <input type="number" id="height" placeholder="Height (cm)">
+  <input type="number" id="age" placeholder="Age">
+  <button onclick="saveData()">Generate Plan</button>
+</div>
+
+<script>
+function saveData(){
+  const w=weight.value;
+  const h=height.value;
+  const a=age.value;
+
+  if(!w||!h||!a){alert("Fill all fields");return}
+
+  localStorage.setItem("user",JSON.stringify({w,h,a}));
+  location.href="plan.html";
+}
+</script>
+</body>
+</html>
+
+
+<!-- ===================== plan.html ===================== -->

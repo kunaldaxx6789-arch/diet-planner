@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Your Plan</title>
+
+<style>
+:root{
+  --bg1:#f8f5f0;
+  --bg2:#efe6d8;
+  --gold:#d4af37;
+}
+
+body{
+  margin:0;
+  font-family:'Segoe UI',sans-serif;
+  background:linear-gradient(135deg,var(--bg1),var(--bg2));
+  padding:20px;
+}
+
+.back{
+  position:absolute;
+  top:20px;
+  left:20px;
+  background:transparent;
+  border:none;
+  font-size:18px;
+  cursor:pointer;
+}
+
+.container{
+  max-width:700px;
+  margin:auto;
+  backdrop-filter:blur(20px);
+  background:#ffffffcc;
+  padding:25px;
+  border-radius:24px;
+  animation:fadeUp 1s ease;
+}
+
+h2,h3{color:var(--gold)}
+
+.macro{
+  margin:10px 0;
+}
+
+.bar{
+  height:10px;
+  border-radius:10px;
+  background:#eee;
+  overflow:hidden;
+}
+
+.fill{
+  height:100%;
+  background:var(--gold);
+}
+
+.day{
+  margin:15px 0;
+  padding:15px;
+  border-radius:16px;
+  background:#fff;
+  box-shadow:0 5px 15px rgba(0,0,0,0.05);
+}
+
+.loader{
+  position:fixed;
+  inset:0;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:#fff;
+  font-size:20px;
+}
+
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(20px)}
+  to{opacity:1;transform:translateY(0)}
+}
+</style>
+</head>
+
+<body>
+<div class="loader" id="loader">Preparing your premium plan...</div>
+<button class="back" onclick="goBack()">← Back</button>
+
+<div class="container" id="app" style="display:none"></div>
+
+<script>
+setTimeout(init,1200);
+
+function init(){
+  loader.style.display="none";
+  app.style.display="block";
+
+  const data=JSON.parse(localStorage.getItem("user"));
+  if(!data)return;
+
+  const w=+data.w;
+  const h=data.h/100;
+
+  const bmi=(w/(h*h)).toFixed(1);
+  let cal=Math.round(24*w);
+
+  let type, meals;
+
+  if(bmi<18.5){
+    type="Weight Gain";
+    cal+=300;
+    meals=["Paneer Paratha","Banana Shake","Rice+Dal","Peanuts","Chicken/Panner Curry"];
+  } else if(bmi<25){
+    type="Maintenance";
+    meals=["Poha","Fruits","Roti+Sabzi","Nuts","Dal+Rice"];
+  } else{
+    type="Fat Loss";
+    cal-=300;
+    meals=["Oats","Apple","Grilled Chicken","Green Tea","Soup+Salad"];
+  }
+
+  const protein=Math.round(w*2);
+  const fats=Math.round(w*0.8);
+  const carbs=Math.round((cal-(protein*4+fats*9))/4);
+
+  const days=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+
+  app.innerHTML=`
+    <h2>Your Plan (${type})</h2>
+    <p><b>BMI:</b> ${bmi}</p>
+    <p><b>Calories:</b> ${cal}</p>
+
+    <h3>Macros</h3>
+    ${macro("Protein",protein)}
+    ${macro("Carbs",carbs)}
+    ${macro("Fats",fats)}
+
+    <h3>7 Day Plan</h3>
+    ${days.map(d=>dayCard(d,meals)).join("")}
+
+    <h3>Tips</h3>
+    <ul>
+      <li>Drink 3-4L water</li>
+      <li>Sleep 7-8 hrs</li>
+      <li>Exercise 4-5 days/week</li>
+    </ul>
+  `;
+}
+
+function macro(name,val){
+  return `
+  <div class="macro">
+    <p>${name}: ${val}g</p>
+    <div class="bar"><div class="fill" style="width:${Math.min(val,200)}px"></div></div>
+  </div>`;
+}
+
+function dayCard(day,meals){
+  return `
+  <div class="day">
+    <b>${day}</b>
+    <ul>
+      <li>Breakfast: ${meals[0]}</li>
+      <li>Snack: ${meals[1]}</li>
+      <li>Lunch: ${meals[2]}</li>
+      <li>Evening: ${meals[3]}</li>
+      <li>Dinner: ${meals[4]}</li>
+    </ul>
+  </div>`;
+}
+
+function goBack(){
+  localStorage.clear();
+  location.href="index.html";
+}
+</script>
+</body>
+</html>
